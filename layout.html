@@ -1,11 +1,19 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
 <html ng-app="workoutApp">
 <head>
-<title>Something</title>
+<title>Workouts</title>
 <script src="/lib/angular.js"></script>
 <script src="/lib/angular-route.js"></script>
 <script src="/app.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
+	<h1>Workouts</h1>
+	<div class="workouts" ng-init="order='title': reverse=false">
+		<button ng-click="order='created_at'">Recently Added</button>
+		<button ng-click="order='updated_at'">Recently Updated</button>
+		<button ng-click="order='title'">Name of Exercise</button>
+	</div>
 </body>
 </html>

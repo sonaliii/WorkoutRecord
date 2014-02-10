@@ -23,7 +23,7 @@ exports.handleRequest = function(request, response) {
 
   if (request.url === '/') {
   
-    fs.readFile("data.tsv",'utf8', function(error, data) {
+    fs.readFile("layout.html",'utf8', function(error, data) {
       if(error) {
         headers['Content-Type'] = "text/plain";
         statusCode = 404;
