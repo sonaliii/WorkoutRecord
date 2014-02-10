@@ -36,6 +36,10 @@ exports.handleRequest = function(request, response) {
     });
   } 
 
+  if (request.url === '/exercises') {
+    
+  }
+
   if(request.method === 'OPTIONS') {
     headers['Content-Type'] = "text/plain";
     response.writeHead(statusCode, headers);

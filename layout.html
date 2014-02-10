@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<html ng-app="workoutApp">
+<html ng-app>
 <head>
-<title>Workouts</title>
-<script src="/lib/angular.js"></script>
-<script src="/lib/angular-route.js"></script>
-<script src="/app.js"></script>
-<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Workouts</title>
+	<script src="/lib/angular.js"></script>
+	<script src="/lib/angular-route.js"></script>
+	<script src="/app.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 	<h1>Workouts</h1>
 	<div class="workouts" ng-init="order='title': reverse=false">
+		<input type="text" ng-model="exercise" placeholder="Enter new exercise">
 		<button ng-click="order='created_at'">Recently Added</button>
 		<button ng-click="order='updated_at'">Recently Updated</button>
 		<button ng-click="order='title'">Name of Exercise</button>
+		<div>{{exercise}}</div>
 	</div>
 </body>
 </html>
