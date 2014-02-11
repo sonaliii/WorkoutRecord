@@ -10,72 +10,37 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/bootstrap.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css">
 
 	<link rel="stylesheet" type="text/css" href="style.css">
-	
-</head>
-<style>
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.x.axis path {
-  /*display: none;*/
-}
-
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-svg{
-	float: right;
-	background-color: rgba(255,255,255,0.4);
-}
-
-body {
-   background:DimGray !important;
-}
-
-.innerBody {
-	margin: 50px;
-}
-
-.nav {
-	width: 120px;
-	background-color: white;
-}
-
-
-</style>
-<body>
-	<div class="innerBody">
-	<h1>Workouts</h1>
-        <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+            <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
         <script src="http://d3js.org/d3.v3.js"></script>
         <script type="text/javascript" src="exercises.js"></script>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 
-		<script src="bower_components/bootstrap/js/button.js"></script>
-		<script src="bower_components/bootstrap/js/dropdown.js"></script>
-		<script src="bower_components/bootstrap/less/buttons.less"></script>
-		<script src="bower_components/bootstrap/less/dropdowns.less"></script>
-		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
-		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-		<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-  		<link rel="stylesheet" href="/resources/demos/style.css">
+        <script src="bower_components/bootstrap/js/button.js"></script>
+        <!-- // <script src="bower_components/bootstrap/js/dropdown.js"></script> -->
+        <script src="bower_components/bootstrap/less/buttons.less"></script>
+        <!-- // <script src="bower_components/bootstrap/less/dropdowns.less"></script> -->
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="/resources/demos/style.css">
+	
+</head>
+
+<body>
+
+	<div class="innerBody">
+	<h1>Workouts</h1>
+
 
 	<div class="exercises" ng-init="order='title'" ng-controller="ExerciseControl">
 
 		<div class="sorting">
 			<input type="text" ng-model="newExercise" placeholder="Enter new exercise">
-			<input type="submit" class="btn btn-success" ng-click="AddExercise" value="Add New Exercise"/>
+			<input type="submit" class="btn btn-success" id="new" ng-click="AddExercise" value="Add New Exercise"/>
 		</div>
 		<br>
 		<div>
@@ -87,7 +52,7 @@ body {
 		<br><br>
 		<div class="oneExercise">
 
-				<input type="text" ng-model="weight" placeholder="Enter max weight or reps">
+				<input type="text" ng-model="weight" placeholder="Max weight or reps">
 				<input type="text" id="datepicker" placeholder="Select date">
                 <form action="">
                     <select name="units" class="units">
@@ -96,50 +61,48 @@ body {
                     <option value="Reps">Reps</option>
                     </select>
                 </form>
-			{{newExercise}}
-
-
-
-
-
-
 		</div>
+                    <br><br><br>
 
-		<div class="exercise" ng-repeat="exercise in exercises | filter: search | orderBy:order">
+		<div class="oneExercise" ng-repeat="exercise in exercises | filter: search | orderBy:order">
 			<div class="info">
-				<div>{{exercise.title}}</div>
-				<div class="title">{{exercise.weight}}</div>
+				<div class="title">{{exercise.title}}</div>
+                {{exercise.title}}
 				<input type="text" ng-model="weight" placeholder="Max weight or reps">
 				<input type="text" id="datepicker" placeholder="Select date">
+                <form action="">
+                    <select name="units" class="units">
+                    <option value="Weight(lb)">Weight(lb)</option>
+                    <option value="Weight(kg)">Weight(kg)</option>
+                    <option value="Reps">Reps</option>
+                    </select>
+                </form>
+                <script></script>
 			</div>
+            <br><br><br>
 		</div>
 	</div>
 <script>
+
 function ExerciseControl($scope, $http) {
-	$scope.exercise = [];
-		$http.get('/data').success(function(data, status, headers, config) {
-			if (data && status === 200) {
-				var exerciseData = data.split('\n');
-				console.log(exerciseData);
-			}
-		});
+    $scope.exercises = [{'weight': 200, 'date': '01-May-2012', 'title': 'Bench Press'}];
+        $http.get('data.tsv').success(function(data, status, headers, config) {
+            if (data && status === 200) {
+                var exerciseData = data.split('\n');
+                console.log(exerciseData);
+            }
+        });
 }
 
-function DropdownCtrl($scope) {
-  $scope.items = [
-    "Weight(lb)",
-    "Weight(kg)",
-    "Reps"
-  ];
+function myFunction() {
+  alert('hi');
 }
 
 $(function() {
 	$( "#datepicker" ).datepicker();
 });
-
-var exercises = {"bench press": {"February 10, 2014": {"weight": 200, "sets": 4, "reps": 4}}};
-
-var margin = {top: 50, right: 50, bottom: 50, left: 50},
+var createGraph = function(exercise, units) {
+    var margin = {top: 50, right: 50, bottom: 50, left: 50},
     width = 480 - margin.left - margin.right,
     height = 250 - margin.top - margin.bottom;
 
@@ -206,6 +169,13 @@ d3.tsv("http://127.0.0.1:8080/", function(error, data) {
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
+}
+
+
+});
+
+$(document).ready(function() {
+  $('#new').click(createGraph('bench press', 'Weight(lb)'));
 });
 
 </script>

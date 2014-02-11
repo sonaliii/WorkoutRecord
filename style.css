@@ -1,3 +1,38 @@
 .oneExercise {
 	margin-left: 80px;
 }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  /*display: none;*/
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+svg{
+	float: right;
+	background-color: rgba(255,255,255,0.4);
+}
+
+body {
+   background:DimGray !important;
+}
+
+.innerBody {
+	margin: 50px;
+}
+
+.nav {
+	width: 120px;
+	background-color: white;
+}
