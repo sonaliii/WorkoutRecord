@@ -6,19 +6,16 @@
 	<script src="lib/angular.js"></script>
 	<script src="lib/angular-route.js"></script>
 	<script src="app.js"></script>
-
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css">
-
 	<link rel="stylesheet" type="text/css" href="style.css">
             <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
         <script src="http://d3js.org/d3.v3.js"></script>
         <script type="text/javascript" src="exercises.js"></script>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-
         <script src="bower_components/bootstrap/js/button.js"></script>
         <!-- // <script src="bower_components/bootstrap/js/dropdown.js"></script> -->
         <script src="bower_components/bootstrap/less/buttons.less"></script>
@@ -31,6 +28,7 @@
 </head>
 
 <body>
+
 
 	<div class="innerBody">
 	<h1>Workouts</h1>
@@ -49,8 +47,13 @@
 		<button ng-click="order='updated_at'" class="btn btn-primary">Recently Updated</button>
 		<button ng-click="order='title'" class="btn btn-primary">Name of Exercise</button>
 		</div>
+        <br>
+        <div class="searching">
+            <input type="text" ng-model="search" placeholder="Search">
+            <input type="submit" class="btn btn-success" id="search" ng-click="search" value="Search"/>
+        </div>
 		<br><br>
-		<div class="oneExercise">
+		<!-- <div class="exercise">
 
 				<input type="text" ng-model="weight" placeholder="Max weight or reps">
 				<input type="text" id="datepicker" placeholder="Select date">
@@ -61,13 +64,12 @@
                     <option value="Reps">Reps</option>
                     </select>
                 </form>
-		</div>
+		</div> -->
                     <br><br><br>
 
-		<div class="oneExercise" ng-repeat="exercise in exercises | filter: search | orderBy:order">
+		<div class="exercise" ng-repeat="exercise in exercises | filter: search | orderBy:order">
 			<div class="info">
 				<div class="title">{{exercise.title}}</div>
-                {{exercise.title}}
 				<input type="text" ng-model="weight" placeholder="Max weight or reps">
 				<input type="text" id="datepicker" placeholder="Select date">
                 <form action="">
@@ -77,15 +79,16 @@
                     <option value="Reps">Reps</option>
                     </select>
                 </form>
-                <script></script>
 			</div>
             <br><br><br>
 		</div>
 	</div>
-<script>
+    <script>
+
+
 
 function ExerciseControl($scope, $http) {
-    $scope.exercises = [{'weight': 200, 'date': '01-May-2012', 'title': 'Bench Press'}];
+    $scope.exercises = [{'weight': 200, 'date': '01-May-2012', 'title': 'Bench Press'}, {'weight': 250, 'date': '01-May-2012', 'title': 'Deadlift'}, {'weight': 250, 'date': '01-May-2012', 'title': 'Push Press'}];
         $http.get('data.tsv').success(function(data, status, headers, config) {
             if (data && status === 200) {
                 var exerciseData = data.split('\n');
@@ -94,15 +97,13 @@ function ExerciseControl($scope, $http) {
         });
 }
 
-function myFunction() {
-  alert('hi');
-}
 
 $(function() {
-	$( "#datepicker" ).datepicker();
+    $( "#datepicker" ).datepicker();
 });
-var createGraph = function(exercise, units) {
-    var margin = {top: 50, right: 50, bottom: 50, left: 50},
+
+$('.exercise').each(function() {
+var margin = {top: 50, right: 50, bottom: 50, left: 50},
     width = 480 - margin.left - margin.right,
     height = 250 - margin.top - margin.bottom;
 
@@ -126,7 +127,7 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.weight); });
 
-var svg = d3.select("body").append("svg")
+    var svg = d3.select(".exercise").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -169,14 +170,17 @@ d3.tsv("http://127.0.0.1:8080/", function(error, data) {
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
-}
-
 
 });
 
-$(document).ready(function() {
-  $('#new').click(createGraph('bench press', 'Weight(lb)'));
-});
+})
+
+
+
+
+// $(document).ready(function() {
+//   $('#new').click(createGraph('bench press', 'Weight(lb)'));
+// });
 
 </script>
 </div>
