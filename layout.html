@@ -5,10 +5,14 @@
 	<!-- <title>Workouts</title> -->
 	<script src="lib/angular.js"></script>
 	<script src="lib/angular-route.js"></script>
-
 	<script src="app.js"></script>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css">
+
 	<link rel="stylesheet" type="text/css" href="style.css">
 	
 </head>
@@ -36,48 +40,71 @@ svg{
 }
 
 body {
-   background:gray !important;
+   background:DimGray !important;
 }
 
 .innerBody {
 	margin: 50px;
 }
 
+.nav {
+	width: 120px;
+	background-color: white;
+}
+
+
 </style>
 <body>
 	<div class="innerBody">
 	<h1>Workouts</h1>
+        <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <script src="http://d3js.org/d3.v3.js"></script>
+        <script type="text/javascript" src="exercises.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+
 		<script src="bower_components/bootstrap/js/button.js"></script>
+		<script src="bower_components/bootstrap/js/dropdown.js"></script>
 		<script src="bower_components/bootstrap/less/buttons.less"></script>
+		<script src="bower_components/bootstrap/less/dropdowns.less"></script>
 		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
 		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 		<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-		<script src="http://d3js.org/d3.v3.js"></script>
-		<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
-  		<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-    	<script type="text/javascript" src="exercises.js"></script>
-    	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
   		<link rel="stylesheet" href="/resources/demos/style.css">
+
 	<div class="exercises" ng-init="order='title'" ng-controller="ExerciseControl">
 
 		<div class="sorting">
 			<input type="text" ng-model="newExercise" placeholder="Enter new exercise">
-			<input type="submit" class="btn btn-success" value="Add New Exercise"/>
+			<input type="submit" class="btn btn-success" ng-click="AddExercise" value="Add New Exercise"/>
 		</div>
 		<br>
 		<div>
 			Sort By:
-		<button ng-click="order='created_at'" class="btn btn-primary">Recently Added<i class="icon-white icon-resize-vertical"></i></button>
+		<button ng-click="order='created_at'" class="btn btn-primary">Recently Added</button>
 		<button ng-click="order='updated_at'" class="btn btn-primary">Recently Updated</button>
 		<button ng-click="order='title'" class="btn btn-primary">Name of Exercise</button>
 		</div>
 		<br><br>
 		<div class="oneExercise">
+
+				<input type="text" ng-model="weight" placeholder="Enter max weight or reps">
+				<input type="text" id="datepicker" placeholder="Select date">
+                <form action="">
+                    <select name="units" class="units">
+                    <option value="Weight(lb)">Weight(lb)</option>
+                    <option value="Weight(kg)">Weight(kg)</option>
+                    <option value="Reps">Reps</option>
+                    </select>
+                </form>
 			{{newExercise}}
-			<input type="text" ng-model="weight" placeholder="Enter max weight or reps">
-			<input type="text" id="datepicker" placeholder="Select date">
+
+
+
+
+
+
 		</div>
-		
+
 		<div class="exercise" ng-repeat="exercise in exercises | filter: search | orderBy:order">
 			<div class="info">
 				<div>{{exercise.title}}</div>
@@ -96,6 +123,14 @@ function ExerciseControl($scope, $http) {
 				console.log(exerciseData);
 			}
 		});
+}
+
+function DropdownCtrl($scope) {
+  $scope.items = [
+    "Weight(lb)",
+    "Weight(kg)",
+    "Reps"
+  ];
 }
 
 $(function() {
