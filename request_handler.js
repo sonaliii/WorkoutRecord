@@ -20,8 +20,26 @@ exports.handleRequest = function(request, response) {
 
   var statusCode = 200;
   var headers = defaultCorsHeaders;
+  
+  var addExercise = function(message) {
+    var timeStamp = new Date();
+    message.objectId = timeStamp.getTime();
+    message.createdAt = timeStamp.toJSON();
+    message.updatedAt = timeStamp.toJSON();
+  }
 
   if (request.url === '/') {
+    fs.readFile("data.tsv",'utf8', function(error, data) {
+      if(error) {
+        headers['Content-Type'] = "text/plain";
+        statusCode = 404;
+        response.writeHead("Sorry the page was not found!");
+      } else {
+        headers['Content-Type'] = "text/tab-separated-values";
+        response.writeHead(statusCode, headers);
+        response.end(data);
+      }
+    });
   
     fs.readFile("layout.html",'utf8', function(error, data) {
       if(error) {
@@ -36,9 +54,20 @@ exports.handleRequest = function(request, response) {
     });
   } 
 
-  if (request.url === '/exercises') {
-    
+  if (request.method === "POST") {
+    fs.appendFile("data.tsv", '\n' + data.date + '\t' + data.weight, function(error) {
+     if(error) {
+        headers['Content-Type'] = "text/plain";
+        statusCode = 404;
+        response.writeHead("Sorry the page was not found!");
+      } else {
+        headers['Content-Type'] = "text/tab-separated-values";
+        response.writeHead(statusCode, headers);
+        response.end(data);
+      }
+    })
   }
+
 
   if(request.method === 'OPTIONS') {
     headers['Content-Type'] = "text/plain";

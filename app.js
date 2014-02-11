@@ -28,7 +28,3 @@ workoutServices.service('AddExerciseService', function($http) {
 })
 
 var exercises = {"bench press": {"February 10, 2014": {"weight": 200, "sets": 4, "reps": 4}}};
-
-exports.AddExercise = function(data) {
-  
-}

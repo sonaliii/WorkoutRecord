@@ -3,20 +3,150 @@
 <html ng-app>
 <head>
 	<title>Workouts</title>
-	<script src="/lib/angular.js"></script>
-	<script src="/lib/angular-route.js"></script>
-	<script src="/app.js"></script>
+	<script src="lib/angular.js"></script>
+	<script src="lib/angular-route.js"></script>
+	<script src="app.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="datepicker/css/datepicker.css">
+    <link rel="stylesheet" type="text/css" href="datepicker/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datepicker/css/bootstrap-responsive.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
+<style>
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  /*display: none;*/
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+svg{
+	float: right;
+}
+</style>
 <body>
 	<h1>Workouts</h1>
-	<div class="workouts" ng-init="order='title': reverse=false">
-		<input type="text" ng-model="exercise" placeholder="Enter new exercise">
+		<script src="http://d3js.org/d3.v3.js"></script>
+    	<script type="text/javascript" src="exercises.js"></script>
+    	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  		<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+  		<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  		<link rel="stylesheet" href="/resources/demos/style.css">
+	<div class="exercises" ng-init="order='title'" ng-controller="ExerciseControl">
+		<input type="text" ng-model="newExercise" placeholder="Enter new exercise">
+		<input type="datetime">
 		<button ng-click="order='created_at'">Recently Added</button>
 		<button ng-click="order='updated_at'">Recently Updated</button>
 		<button ng-click="order='title'">Name of Exercise</button>
-		<div>{{exercise}}</div>
+		<div>{{newExercise}}</div>
+		<input type="text" ng-model="weight" placeholder="Enter max weight or reps">
+		<input type="text" id="datepicker" placeholder="Select date">
+		<div class="exercise" ng-repeat="exercise in exercises | filter: search | orderBy:order">
+			<div class="info">
+				<div>{{exercise.title}}</div>
+				<div class="title">{{exercise.weight}}</div>
+				<input type="text" ng-model="weight" placeholder="Enter max weight or reps">
+				<input type="text" id="datepicker" placeholder="Select date">
+			</div>
+		</div>
 	</div>
+<script>
+function ExerciseControl($scope, $http) {
+	$scope.exercise = [];
+		$http.get('/data').success(function(data, status, headers, config) {
+			if (data && status === 200) {
+				var exerciseData = data.split('\n');
+				console.log(exerciseData);
+			}
+		});
+}
+
+$(function() {
+	$( "#datepicker" ).datepicker();
+});
+
+var exercises = {"bench press": {"February 10, 2014": {"weight": 200, "sets": 4, "reps": 4}}};
+
+var margin = {top: 50, right: 50, bottom: 50, left: 50},
+    width = 480 - margin.left - margin.right,
+    height = 250 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%d-%b-%y").parse;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.weight); });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.tsv("http://127.0.0.1:8080/", function(error, data) {
+  data.forEach(function(d) {
+    d.date = parseDate(d.date);
+    d.close = +d.close;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  y.domain(d3.extent(data, function(d) { return d.weight; }));
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Weight (lbs)");
+  
+  svg.append("text")
+    .attr("x", (width / 2))             
+    .attr("y", 0 - (margin.top / 2))
+    .attr("text-anchor", "middle")  
+    .style("font-size", "16px") 
+    .style("text-decoration", "underline")  
+    .text("" + {{exercise.title}} + "")
+    .style("font-size", "16px")
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+});
+
+</script>
 </body>
 </html>
